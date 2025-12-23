@@ -13,7 +13,6 @@ curl -L https://github.com/fish-shell/fish-shell/releases/download/4.1.2/fish-4.
 curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher && \
     fisher install jorgebucaran/autopair.fish && \
     fisher install joseluisq/gitnow@2.13.0 && \
-    fisher install acomagu/fish-async-prompt && \
     fisher install catppuccin/fish && \
     fish_config theme save "Catppuccin Mocha"
 
