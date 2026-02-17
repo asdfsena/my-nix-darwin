@@ -49,8 +49,8 @@ gpg --import /path/to/gpgkey
 
 # configure git
 git config --global init.defaultBranch main
-git config --global user.name sena
-git config --global user.email sena@lichtlabs.org
+git config --global user.name "Aryasena Putra"
+git config --global user.email "workasena@gmail.com"
 git config --global user.signingkey \<YOUR_GPG_KEY_ID\>
 git config --global commit.gpgsign true
 ```
