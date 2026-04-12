@@ -52,4 +52,7 @@ git config --global user.name "Aryasena Putra"
 git config --global user.email "workasena@gmail.com"
 git config --global user.signingkey \<YOUR_GPG_KEY_ID\>
 git config --global commit.gpgsign true
+
+# optional tmux conf
+wget -O ~/.tmux.conf https://raw.githubusercontent.com/dreamsofcode-io/tmux/refs/heads/main/tmux.conf
 ```
