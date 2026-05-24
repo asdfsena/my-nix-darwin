@@ -24,6 +24,8 @@
         neovim
         btop
         fastfetch
+        ffmpeg-full
+        yt-dlp
         devenv
         gnupg
       ];
