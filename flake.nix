@@ -1,5 +1,5 @@
 {
-  description = "Example nix-darwin system flake";
+  description = "Aryasena's nix-darwin system configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -41,7 +41,7 @@
         "obs"
       ];
 
-      system.primaryUser = "asena";
+      system.primaryUser = "asdfsena";
       security.pam.services.sudo_local.touchIdAuth = true;
       time.timeZone = "Asia/Jakarta";
       services.dnscrypt-proxy.enable = true;
@@ -56,7 +56,7 @@
       };
 
       # Necessary for using flakes on this system.
-      nix.settings.trusted-users = ["root" "asena"];
+      nix.settings.trusted-users = ["root" "asdfsena"];
       nix.settings.experimental-features = "nix-command flakes";
 
       # Enable alternative shell support in nix-darwin.
@@ -74,7 +74,7 @@
       programs.tmux.enableVim = true;
       programs.tmux.enableMouse = true;
 
-      networking.hostName = "proxyhebat";
+      networking.hostName = "m1n1kyute";
       networking.applicationFirewall.enable = true;
       networking.applicationFirewall.enableStealthMode = true;
 
@@ -90,8 +90,8 @@
     };
   in {
     # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#proxyhebat
-    darwinConfigurations."proxyhebat" = nix-darwin.lib.darwinSystem {
+    # $ darwin-rebuild build --flake .#m1n1kyute
+    darwinConfigurations."m1n1kyute" = nix-darwin.lib.darwinSystem {
       modules = [configuration];
     };
   };
