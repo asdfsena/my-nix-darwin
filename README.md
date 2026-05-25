@@ -1,78 +1,58 @@
-{
-  description = "Aryasena's nix-darwin system flake";
+# Installation
 
-  inputs = {
-    nixpkgs.url      = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nix-darwin.url   = "github:nix-darwin/nix-darwin/master";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-  };
+> Purely handwritten. No AI. #NPD
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
-  let
-    configuration = { pkgs, ... }: {
+```bash
+# Install xcode cmdline
+xcode-select --install
 
-      # ── System ────────────────────────────────────────────────────────────
-      nixpkgs.hostPlatform        = "aarch64-darwin";
-      system.primaryUser          = "asdfsena";
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-      system.stateVersion         = 6;
+# Install fish
+curl -L https://github.com/fish-shell/fish-shell/releases/download/4.1.2/fish-4.1.2.pkg -o ~/Downloads/fish.pkg # manually install by clicking the bundle
 
-      # ── User ──────────────────────────────────────────────────────────────
-      users.users.asdfsena.shell = pkgs.fish;
+# Setup fish
+curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher && \
+    fisher install jorgebucaran/autopair.fish && \
+    fisher install catppuccin/fish && \
+    fish_config theme save "catppuccin-mocha"
 
-      # ── Networking ────────────────────────────────────────────────────────
-      networking.hostName                          = "m1n1kyute";
-      networking.applicationFirewall.enable        = true;
-      networking.applicationFirewall.enableStealthMode = true;
+# System Preferences
+# take screenshots as jpg (usually smaller size) and not png
+defaults write com.apple.screencapture type jpg && \
+    # do not open previous previewed files (e.g. PDFs) when opening a new one
+    defaults write com.apple.Preview ApplePersistenceIgnoreState YES && \
+    # show Library folder
+    chflags nohidden ~/Library && \
+    # show hidden files
+    defaults write com.apple.finder AppleShowAllFiles YES && \
+    # show path bar
+    defaults write com.apple.finder ShowPathbar -bool true && \
+    # show status bar
+    defaults write com.apple.finder ShowStatusBar -bool true && \
+    # Restart Finder
+    killall Finder;
 
-      # ── Security ──────────────────────────────────────────────────────────
-      security.pam.services.sudo_local.touchIdAuth = true;
+# Install Homebrew Package Manager
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-      # ── Nix ───────────────────────────────────────────────────────────────
-      nix.settings.experimental-features = "nix-command flakes";
-      nix.settings.trusted-users         = [ "root" "asdfsena" ];
-      nix.gc = {
-        automatic = true;
-        options   = "--delete-older-than 30d";
-        interval  = { Weekday = 0; Hour = 0; Minute = 0; };
-      };
+# Install Nix Package Manager
+curl -L https://github.com/NixOS/experimental-nix-installer/releases/download/0.27.0/nix-installer.sh | sh -s -- install
 
-      # ── Environment ───────────────────────────────────────────────────────
-      environment.variables.GHQ_ROOT = "$HOME/Sources";
-      environment.systemPackages = with pkgs; [
-        git gh ghq
-        curl wget
-        neovim btop fastfetch
-        ffmpeg-full yt-dlp
-        devenv gnupg
-      ];
+# Clone this repo to /etc/nix-darwin
+sudo git clone https://github.com/sena25519/my-nix-darwin.git /etc/nix-darwin
 
-      # ── Programs ──────────────────────────────────────────────────────────
-      programs.fish.enable   = true;
-      programs.direnv.enable = true;
-      programs.tmux = {
-        enable      = true;
-        enableVim   = true;
-        enableMouse = true;
-      };
-      programs.gnupg.agent = {
-        enable         = true;
-        enableSSHSupport = true;
-      };
+# Install Nix-Darwin
+sudo nix --extra-experimental-features nix-command --extra-experimental-features flakes run nix-darwin/master#darwin-rebuild -- switch
 
-      # ── Homebrew ──────────────────────────────────────────────────────────
-      homebrew.enable = true;
-      homebrew.casks  = [
-        "zed"
-        "github"
-        "betterdisplay"
-      ];
-    };
-  in
-  {
-    # darwin-rebuild build --flake .#m1n1kyute
-    darwinConfigurations."m1n1kyute" = nix-darwin.lib.darwinSystem {
-      modules = [ configuration ];
-    };
-  };
-}
+# Import gpg keys
+gpg --import /path/to/gpgkey
+
+# configure git
+git config --global init.defaultBranch main
+git config --global user.name "Aryasena Putra"
+git config --global user.email "92186264+asdfsena@users.noreply.github.com"
+git config --global user.signingkey \<YOUR_GPG_KEY_ID\>
+git config --global commit.gpgsign true
+
+# optional tmux conf
+wget -O ~/.tmux.conf https://raw.githubusercontent.com/dreamsofcode-io/tmux/refs/heads/main/tmux.conf
+```
