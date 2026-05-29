@@ -62,10 +62,12 @@
 
       # ── Homebrew ──────────────────────────────────────────────────────────
       homebrew.enable = true;
+      homebrew.brews = [];
       homebrew.casks  = [
         "zed"
         "github"
-        "betterdisplay"
+        "ghostty"
+        "font-lilex-nerd-font"
       ];
     };
   in
