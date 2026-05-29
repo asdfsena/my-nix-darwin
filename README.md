@@ -35,13 +35,13 @@ defaults write com.apple.screencapture type jpg && \
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Install Nix Package Manager
-curl -L https://github.com/NixOS/experimental-nix-installer/releases/download/0.27.0/nix-installer.sh | sh -s -- install
+curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
 
 # Clone this repo to /etc/nix-darwin
 sudo git clone https://github.com/sena25519/my-nix-darwin.git /etc/nix-darwin
 
 # Install Nix-Darwin
-sudo nix --extra-experimental-features nix-command --extra-experimental-features flakes run nix-darwin/master#darwin-rebuild -- switch
+sudo nix run nix-darwin/master#darwin-rebuild -- switch
 
 # Import gpg keys
 gpg --import /path/to/gpgkey
