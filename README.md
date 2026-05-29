@@ -54,5 +54,6 @@ git config --global user.signingkey \<YOUR_GPG_KEY_ID\>
 git config --global commit.gpgsign true
 
 # optional tmux conf
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 wget -O ~/.tmux.conf https://raw.githubusercontent.com/dreamsofcode-io/tmux/refs/heads/main/tmux.conf
 ```
