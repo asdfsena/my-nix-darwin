@@ -2,77 +2,76 @@
   description = "Aryasena's nix-darwin system flake";
 
   inputs = {
-    nixpkgs.url      = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nix-darwin.url   = "github:nix-darwin/nix-darwin/master";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{ self, nix-darwin, nixpkgs }:
   let
     configuration = { pkgs, ... }: {
-
-      # ── System ────────────────────────────────────────────────────────────
-      nixpkgs.hostPlatform        = "aarch64-darwin";
-      system.primaryUser          = "asdfsena";
-      system.configurationRevision = self.rev or self.dirtyRev or null;
-      system.stateVersion         = 6;
-
-      # ── User ──────────────────────────────────────────────────────────────
-      users.users.asdfsena.shell = pkgs.fish;
-
-      # ── Networking ────────────────────────────────────────────────────────
-      networking.hostName                          = "m1n1kyute";
-      networking.applicationFirewall.enable        = true;
-      networking.applicationFirewall.enableStealthMode = true;
-
-      # ── Security ──────────────────────────────────────────────────────────
-      security.pam.services.sudo_local.touchIdAuth = true;
-
-      # ── Nix ───────────────────────────────────────────────────────────────
-      nix.settings.experimental-features = "nix-command flakes";
-      nix.settings.trusted-users         = [ "root" "asdfsena" ];
-      nix.gc = {
-        automatic = true;
-        options   = "--delete-older-than 30d";
-        interval  = { Weekday = 0; Hour = 0; Minute = 0; };
-      };
-
-      # ── Environment ───────────────────────────────────────────────────────
-      environment.variables.GHQ_ROOT = "$HOME/Sources";
-      environment.systemPackages = with pkgs; [
+      # List packages installed in system profile. To search by name, run:
+      # $ nix-env -qaP | grep wget
+      environment.systemPackages = with pkgs; [ 
+        nil nixd
         git gh ghq
         curl wget
-        neovim btop fastfetch
+        neovim fastfetch
         ffmpeg-full yt-dlp
         devenv gnupg
       ];
+      system.primaryUser = "asdfsena";
 
-      # ── Programs ──────────────────────────────────────────────────────────
-      programs.fish.enable   = true;
-      programs.direnv.enable = true;
-      programs.tmux = {
-        enable      = true;
-        enableVim   = true;
-        enableMouse = true;
-      };
-      programs.gnupg.agent = {
-        enable         = true;
-        enableSSHSupport = true;
-      };
-
-      # ── Homebrew ──────────────────────────────────────────────────────────
       homebrew.enable = true;
-      homebrew.brews = [];
+      homebrew.brews = [
+        "opencode"
+        "btop"
+      ];
       homebrew.casks  = [
         "zed"
         "github"
         "ghostty"
         "font-lilex-nerd-font"
+        "betterdisplay"
+        "tailscale-app"
+	      "discord"
       ];
+
+      networking.hostName = "m1n1kyute";
+      networking.applicationFirewall.enable = true;
+      networking.applicationFirewall.enableStealthMode = true;
+
+      # Necessary for using flakes on this system.
+      nix.settings.trusted-users         = [ "root" "asdfsena" ];
+      nix.settings.experimental-features = "nix-command flakes";
+      nix.settings.auto-optimise-store = true;
+      nix.gc = {
+        automatic = true;
+        interval  = { Hour = 0; Minute = 0; };
+        options   = "--delete-older-than 30d";
+      };
+
+      # Enable alternative shell support in nix-darwin.
+      programs.fish.enable = true;
+      programs.gnupg.agent = {
+        enable             = true;
+        enableSSHSupport   = true;
+      };
+
+      # Set Git commit hash for darwin-version.
+      system.configurationRevision = self.rev or self.dirtyRev or null;
+
+      # Used for backwards compatibility, please read the changelog before changing.
+      # $ darwin-rebuild changelog
+      system.stateVersion = 6;
+
+      # The platform the configuration will be used on.
+      nixpkgs.hostPlatform = "aarch64-darwin";
     };
   in
   {
-    # darwin-rebuild build --flake .#m1n1kyute
+    # Build darwin flake using:
+    # $ darwin-rebuild build --flake .#m1n1kyute
     darwinConfigurations."m1n1kyute" = nix-darwin.lib.darwinSystem {
       modules = [ configuration ];
     };
